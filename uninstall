@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
+PI_EXT_DIR="$HOME/.pi/agent/extensions"
+
+echo "Uninstalling pi-mux..."
+
+# Remove skill symlink (new format)
+if [ -L "$CLAUDE_SKILLS_DIR/pi-review" ]; then
+  rm -f "$CLAUDE_SKILLS_DIR/pi-review"
+  echo "  Removed $CLAUDE_SKILLS_DIR/pi-review"
+elif [ -d "$CLAUDE_SKILLS_DIR/pi-review" ]; then
+  echo "  Warning: $CLAUDE_SKILLS_DIR/pi-review is a real directory, skipping"
+else
+  echo "  $CLAUDE_SKILLS_DIR/pi-review not found, skipping"
+fi
+
+# Remove old format: Pi extension symlink
+if [ -L "$PI_EXT_DIR/xreview.ts" ]; then
+  rm -f "$PI_EXT_DIR/xreview.ts"
+  echo "  Removed old Pi extension: $PI_EXT_DIR/xreview.ts"
+fi
+
+# Clean up runtime directory
+MUX_DIR="${PI_MUX_DIR:-${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}}/pi-mux-$(id -u)}"
+if [ -d "$MUX_DIR" ]; then
+  rm -rf "$MUX_DIR"
+  echo "  Removed runtime dir: $MUX_DIR"
+fi
+
+echo "Done."

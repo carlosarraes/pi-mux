@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
+
+echo "Installing pi-mux skill from $REPO_DIR"
+
+mkdir -p "$CLAUDE_SKILLS_DIR"
+
+if [ -d "$CLAUDE_SKILLS_DIR/pi-review" ] && [ ! -L "$CLAUDE_SKILLS_DIR/pi-review" ]; then
+  echo "Error: $CLAUDE_SKILLS_DIR/pi-review is a real directory. Remove it manually."
+  exit 1
+fi
+rm -f "$CLAUDE_SKILLS_DIR/pi-review"
+ln -s "$REPO_DIR/skills/pi-review" "$CLAUDE_SKILLS_DIR/pi-review"
+echo "  -> $CLAUDE_SKILLS_DIR/pi-review"
+
+echo "Done. Restart Claude Code to pick up the skill."
